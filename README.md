@@ -1,4 +1,4 @@
-## Experiment 3: Ordinary Least Squares (Closed-form) Linear Regression 
+## Experiment 4: Logistic Regression, ROC and Evaluation Metrics 
 
 
 
@@ -11,7 +11,7 @@
 
 
 
-Implement OLS via normal equations and compare to scikit-learn.
+Train logistic regression; compute accuracy, precision, recall, F1, AUC and plot ROC. 
 
 
 
@@ -24,7 +24,7 @@ Implement OLS via normal equations and compare to scikit-learn.
 
 
 
-Normal equation : 𝛽̂ = (𝑋𝑇𝑋)−1𝑋𝑇𝑦
+Logistic regression (MLE). ROC uses predicted probabilities. 
 
 
 
@@ -39,9 +39,7 @@ Normal equation : 𝛽̂ = (𝑋𝑇𝑋)−1𝑋𝑇𝑦
 
 
 
-OLS minimizes squared residuals; closed-form solution requires invertible Gram
-
-
+Logistic function models log-odds; evaluation depends on use-case (class imbalance, etc.).
 
 
 
@@ -50,43 +48,45 @@ OLS minimizes squared residuals; closed-form solution requires invertible Gram
 ## INPUT
 
 
-# Experiment 3
+# Experiment 4
 import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-# Toy dataset: features = [size, age], target = price
-X = np.array([[50,10],[80,5],[60,8],[100,2],[45,12]])
-y = np.array([150,240,180,320,140])
-# Add intercept term
-X0 = np.hstack([np.ones((X.shape[0],1)),X])
-beta_hat = np.linalg.inv(X0.T.dot(X0)).dot(X0.T).dot(y)
-y_pred_closed = X0.dot(beta_hat)
-# sklearn model (for comparison)
-model = LinearRegression().fit(X, y)
-y_pred_sk = model.predict(X)
-print('Closed-form beta:', np.round(beta_hat,3))
-print('MSE (closed):', mean_squared_error(y,y_pred_closed))
-print('MSE (sklearn):', mean_squared_error(y, y_pred_sk))
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import (accuracy_score, precision_score,
+recall_score, f1_score, roc_auc_score, roc_curve)
+import matplotlib.pyplot as plt
+x = np.array([[2,3],[1,2],[3,1],[6,5],[7,8],[8,6]])
+y = np.array([0,0,0,1,1,1])
+model = LogisticRegression().fit(x,y)
+y_pred = model.predict(x)
+probs = model.predict_proba(x)[:,1]
+print('Accuracy:', accuracy_score(y,y_pred))
+print('Precision:', precision_score(y,y_pred))
+print('Recall:', recall_score(y,y_pred))
+print('F1:', f1_score(y,y_pred))
+print('AUC:', roc_auc_score(y,probs))
+fpr, tpr, _ = roc_curve(y, probs)
+plt.plot(fpr,tpr); plt.plot([0,1],[0,1],'--'); plt.xlabel('FPR');
+plt.ylabel('TPR'); plt.title('ROC Curve'); plt.show()
 
 
 ## OUTPUT:
 
 
-Closed-form beta: [-164.796    4.649    8.019]
-MSE (closed): 14.990291262136022
-MSE (sklearn): 14.990291262135969
-
+Accuracy: 1.0
+Precision: 1.0
+Recall: 1.0
+F1: 1.0
+AUC: 1.0
 
 ```
+<img width="567" height="455" alt="image" src="https://github.com/user-attachments/assets/35a5eca1-0ac0-4e47-a782-9a969b9f38af" />
+
+
+
+## RESULT
 
 
 
 
-## RESULT : 
-
-
-
-
-
-Students see how closed-form OLS yields coefficients; numerical stability note: prefer 
-SVD in practice.
+Students learn evaluation metrics and how probability thresholds trade off 
+precision/recall.
