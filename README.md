@@ -1,4 +1,4 @@
-### Experiment 9: Neural Network (Keras) on non-linear toy data (make_moons) 
+### Experiment 10: Back propagation numeric example for single neuron
 
 
 
@@ -12,17 +12,8 @@
 
 
 
-
-Train a small feedforward neural network to classify non-linear data. 
-
-
-
-
-
-
-
-
-### ALGORITHM : 
+Manually compute forward and backward pass for a single sigmoid neuron and update 
+weights. 
 
 
 
@@ -32,7 +23,15 @@ Train a small feedforward neural network to classify non-linear data.
 
 
 
-Two-layer dense network with ReLU hidden units and sigmoid output, trained with Adam. 
+### ALGORITHM :  
+
+
+
+
+
+
+
+Compute gradient of cross-entropy loss and update weights via gradient descent.
 
 
 
@@ -41,16 +40,7 @@ Two-layer dense network with ReLU hidden units and sigmoid output, trained with 
 
 
 
-### THEORY:
-
-
-
-
-
-
-
-With non-linear activations, networks approximate complex decision boundaries 
-(universal approximation).
+### THEORY: 
 
 
 
@@ -59,24 +49,44 @@ With non-linear activations, networks approximate complex decision boundaries
 
 
 
-### INPUT : 
+
+Back propagation is chain rule application in neural nets; cross-entropy + sigmoid 
+simplifies gradients.
+
+
+
+
+
+
+
+
+
+### INPUT :
 
 
 ```
-#EXPREIMENT 9
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense
-from sklearn.datasets import make_moons
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
-x,y = make_moons(n_samples=500, noise=0.2, random_state=42)
-xtr,xte,ytr,yte = train_test_split(x,y,test_size=0.2,random_state=42)
-model = Sequential([Dense(8, activation='relu', input_shape=(2,)), Dense(1, activation='sigmoid')])
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-model.fit(xtr, ytr, epochs=30, batch_size=16, verbose=0)
-y_pred = (model.predict(xte) >0.5).astype(int).flatten()
-print('NN test accuracy:', round(accuracy_score(yte, y_pred),4))
-
+# Experiment 10
+import numpy as np
+# Single sample x, target y
+x = np.array([0.5, -1.2])
+y = 1.0
+w = np.array([0.1, -0.2]); b = 0.0
+lr = 0.1
+def sigmoid(z): return 1/(1+np.exp(-z))
+# Forward pass
+z = np.dot(w, x) + b
+a = sigmoid(z)
+loss = - (y*np.log(a) + (1-y)*np.log(1-a))
+# Backward pass (gradients)
+dz = a - y
+dw = dz * x
+db = dz
+# Update weights
+w_new = w - lr * dw
+b_new = b - lr * db
+print('a (output):', round(a,4), 'loss:', round(loss,4))
+print('dw:', np.round(dw,4), 'db:', round(db,4))
+print('Updated w:', np.round(w_new,4), 'Updated b:', round(b_new,4))
 ```
 
 
@@ -84,13 +94,21 @@ print('NN test accuracy:', round(accuracy_score(yte, y_pred),4))
 
 ### OUTPUT :
 
-```
-/usr/local/lib/python3.13/dist-packages/keras/src/layers/core/dense.py:106: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
-  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
-4/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step
-NN test accuracy: 0.87
 
 ```
+a (output): 0.572 loss: 0.5586
+dw: [-0.214   0.5136] db: -0.428
+Updated w: [ 0.1214 -0.2514] Updated b: 0.0428
+
+```
+
+
+
+
+
+
+
+ ### RESULT : 
 
 
 
@@ -99,13 +117,6 @@ NN test accuracy: 0.87
 
 
 
-### RESULT : 
 
-
-
-
-
-
-
-Neural networks model non-linear boundaries; students see improved accuracy over 
-linear methods.
+Learners observe numeric gradients and weight updates; demystifies 
+backpropagation.
