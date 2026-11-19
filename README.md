@@ -1,92 +1,68 @@
-## Experiment 4: Logistic Regression, ROC and Evaluation Metrics 
+## Experiment 5: K-Means Clustering and Inertia (Unsupervised Learning) 
 
 
 
 
 
-## AIM : 
-
-
-
-
-
-
-Train logistic regression; compute accuracy, precision, recall, F1, AUC and plot ROC. 
+## AIM :
 
 
 
 
 
 
-## ALGORITHM (brief): 
-
-
-
-
-
-Logistic regression (MLE). ROC uses predicted probabilities. 
+Apply KMeans to a synthetic 2-cluster dataset; compute and visualize inertia. 
 
 
 
 
 
 
-## THEORY: 
+## ALGORITHM :
+
+
+
+
+
+Lloyd’s algorithm: assign to nearest centroid → recompute centroids until convergence. 
 
 
 
 
 
 
-
-Logistic function models log-odds; evaluation depends on use-case (class imbalance, etc.).
-
+KMeans minimizes within-cluster variance; relates to vector quantization. 
 
 
 ```
+
 
 ## INPUT
 
-
-# Experiment 4
+# Experiment 5
 import numpy as np
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import (accuracy_score, precision_score,
-recall_score, f1_score, roc_auc_score, roc_curve)
 import matplotlib.pyplot as plt
-x = np.array([[2,3],[1,2],[3,1],[6,5],[7,8],[8,6]])
-y = np.array([0,0,0,1,1,1])
-model = LogisticRegression().fit(x,y)
-y_pred = model.predict(x)
-probs = model.predict_proba(x)[:,1]
-print('Accuracy:', accuracy_score(y,y_pred))
-print('Precision:', precision_score(y,y_pred))
-print('Recall:', recall_score(y,y_pred))
-print('F1:', f1_score(y,y_pred))
-print('AUC:', roc_auc_score(y,probs))
-fpr, tpr, _ = roc_curve(y, probs)
-plt.plot(fpr,tpr); plt.plot([0,1],[0,1],'--'); plt.xlabel('FPR');
-plt.ylabel('TPR'); plt.title('ROC Curve'); plt.show()
+from sklearn. cluster import KMeans
+np.random.seed(42)
+x = np.vstack([np.random.randn(50,2)+np.array([0,0]),
+np.random.randn(50,2)+np.array([5,5])])
+kmeans = KMeans (n_clusters=2, random_state=42).fit(x)
+labels = kmeans.labels_
+centers = kmeans.cluster_centers_
+plt.scatter(x[:,0], x[:,1], c=labels, cmap='viridis');
+plt.scatter(centers[:,0],centers[:,1], marker='x', color='red', s=100); plt.title('KMeans Clusters');plt.show()
+print('Inerita (WCSS):', round(kmeans.inertia_,3))
+
 
 
 ## OUTPUT:
-
-
-Accuracy: 1.0
-Precision: 1.0
-Recall: 1.0
-F1: 1.0
-AUC: 1.0
-
 ```
-<img width="567" height="455" alt="image" src="https://github.com/user-attachments/assets/35a5eca1-0ac0-4e47-a782-9a969b9f38af" />
-
-
+<img width="546" height="435" alt="image" src="https://github.com/user-attachments/assets/70985b57-3018-4ced-b5e8-14b6e75835de" />
+Inerita (WCSS): 170.203
 
 ## RESULT
 
 
 
-
-Students learn evaluation metrics and how probability thresholds trade off 
-precision/recall.
+Students observe cluster structure and effect of centroid positions. Note sensitivity to 
+initialization & scaling.
