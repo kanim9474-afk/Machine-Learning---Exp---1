@@ -1,245 +1,99 @@
-# Matrix-operations-linear-algebra-with-NumPy
-# EXPERIMENT - 1
-
-## AIM
-
-Introduce matrix operations used in ML: transpose, inverse, solve linear systems, eigen 
-decomposition. 
+## Experiment 2: Probability & basic statistics with Pandas and NumPy 
 
 
----
 
-## ALGORITHM
 
-**Brief Algorithm:**
 
-Direct use of numpy.linalg routines; relate to linear regression normal equations. 
 
----
 
-## PROGRAM
+## AIM: 
 
-**Run the following program in a Jupyter Notebook code cell:**
 
-```python
+
+
+
+
+Compute descriptive statistics and empirical probabilities; generate samples from 
+distributions. 
+
+
+
+
+
+
+
+## ALGORITHM (brief): 
+
+
+
+
+
+
+
+Use pandas.Series for statistics; numpy.random for sampling.
+
+
+
+
+
+
+
+## THEORY: 
+
+
+
+
+
+
+
+Descriptive statistics and sampling basics used throughout ML.
+
+
+
+
+
+
+
+
+```
+
+## INPUT :
+
+
+# EXPRIMENT 2
 import numpy as np
+import pandas as pd
+heights = np.array([160,165,170,180,155,168,172,169,158])
+s = pd.Series(heights)
+print("Mean:", s.mean())
+print("Median:", s.median())
+print("Std dev:", round(s.std(),3))
+print("Variance:", round(s.var(),3))
+print("P(height> 170):", (s>170).mean())
+sample = np.random.normal(loc=s.mean(), scale=s.std(), size=10)
+print("Random sample (10) from normal around mean:", np.round(sample,2))
 
-A = np.array([[2.0, 1.0],
-              [1.0, 3.0]])
 
-b = np.array([1.0, 2.0])
 
-print("Matrix A:\n", A)
+## OUTPUT :
 
-print("\nTranspose A^T:\n", A.T)
 
-print("\nInverse A^-1:\n", np.linalg.inv(A))
+Mean: 166.33333333333334
+Median: 168.0
+Std dev: 7.762
+Variance: 60.25
+P(height> 170): 0.2222222222222222
+Random sample (10) from normal around mean: [176.88 166.19 164.79 167.15 159.1  175.4  172.78 170.16 162.91 159.06]
 
-eigvals, eigvecs = np.linalg.eig(A)
 
-print("\nEigenvalues:", np.round(eigvals, 4))
 
-x = np.linalg.solve(A, b)
-
-print("\nSolve A x = b --> x:", np.round(x, 4))
 ```
 
----
 
-## DETAILED EXPLANATION
 
-### 1. Import NumPy
 
-```python
-import numpy as np
-```
-
-Loads the NumPy library for working with arrays and performing linear algebra operations.
-
----
-
-### 2. Define Matrix A
-
-```python
-A = np.array([[2.0, 1.0],
-              [1.0, 3.0]])
-```
-
-Defines a **2 × 2 matrix A**.
-
-\[
-A =
-\begin{bmatrix}
-2 & 1 \\
-1 & 3
-\end{bmatrix}
-\]
-
----
-
-### 3. Define Vector b
-
-```python
-b = np.array([1.0, 2.0])
-```
-
-Defines vector `b`, which is used for solving the linear system:
-
-\[
-Ax = b
-\]
-
----
-
-### 4. Display Matrix A
-
-```python
-print("Matrix A:\n", A)
-```
-
-Displays matrix `A` for reference.
-
----
-
-### 5. Calculate Transpose
-
-```python
-A.T
-```
-
-Computes the **transpose** of matrix `A`.
-
-The transpose changes rows into columns and columns into rows.
-
-\[
-A^T =
-\begin{bmatrix}
-2 & 1 \\
-1 & 3
-\end{bmatrix}
-\]
-
----
-
-### 6. Calculate Inverse
-
-```python
-np.linalg.inv(A)
-```
-
-Computes the **inverse of matrix A**.
-
-The inverse exists only if matrix `A` is **invertible**, meaning its determinant is non-zero.
-
-For the given matrix:
-
-\[
-A^{-1} =
-\begin{bmatrix}
-0.6 & -0.2 \\
--0.2 & 0.4
-\end{bmatrix}
-\]
-
----
-
-### 7. Calculate Eigenvalues and Eigenvectors
-
-```python
-np.linalg.eig(A)
-```
-
-Computes the **eigenvalues and eigenvectors** of matrix `A`.
-
-Eigenvalues and eigenvectors are important in Machine Learning because they help identify important directions and patterns in data.
-
-They are particularly useful in:
-
-- Principal Component Analysis (PCA)
-- Dimensionality reduction
-- Feature extraction
-- Covariance matrix analysis
-
----
-
-### 8. Solve Linear System
-
-```python
-np.linalg.solve(A, b)
-```
-
-Numerically solves the linear system:
-
-\[
-Ax = b
-\]
-
-For the given values:
-
-\[
-\begin{bmatrix}
-2 & 1 \\
-1 & 3
-\end{bmatrix}
-\begin{bmatrix}
-x_1 \\
-x_2
-\end{bmatrix}
-=
-\begin{bmatrix}
-1 \\
-2
-\end{bmatrix}
-\]
-
-The solution is:
-
-\[
-x =
-\begin{bmatrix}
-0.2 \\
-0.6
-\end{bmatrix}
-\]
-
-`np.linalg.solve(A, b)` is generally more numerically stable than calculating:
-
-```python
-np.linalg.inv(A).dot(b)
-```
-
----
-
-## OUTPUT
-
-```text
-Matrix A:
- [[2. 1.]
-  [1. 3.]]
-
-Transpose A^T:
- [[2. 1.]
-  [1. 3.]]
-
-Inverse A^-1:
- [[ 0.6 -0.2]
-  [-0.2  0.4]]
-
-Eigenvalues: [3.3028 1.6972]
-
-Solve A x = b --> x: [0.2 0.6]
-```
-
----
 
 ## RESULT
 
-Students successfully performed concrete matrix computations using NumPy and learned how to solve linear systems.
 
-The experiment also demonstrates the relationship between matrix operations and Machine Learning concepts such as **Linear Regression** and **Principal Component Analysis (PCA)**.
-
----
-
-## THEORY
-
-Linear algebra is an important mathematical foundation of Machine Learning.
+Students learn central tendency, spread, and simple empirical probability estimation.
