@@ -1,15 +1,20 @@
-### Experiment 7: Preprocessing Pipeline: Impute, One-Hot Encode, Scale 
+### Experiment 8: Ensemble Methods: Random Forest vs AdaBoost comparison 
 
 
 
 
 
 
-### AIM: 
+### AIM : 
 
 
-Build a ColumnTransformer pipeline to preprocess numeric and categorical features safely.
 
+
+
+
+
+Train RandomForest and AdaBoost classifiers on the breast cancer dataset and compare 
+accuracies. 
 
 
 
@@ -25,7 +30,10 @@ Build a ColumnTransformer pipeline to preprocess numeric and categorical feature
 
 
 
-Apply median imputation & standard scaling to numeric features; one-hot encode categorical features — all inside a pipeline to avoid leakage.
+
+
+RandomForest = bagging many trees; AdaBoost = sequential boosting of weak learners 
+focusing on hard examples.
 
 
 
@@ -34,7 +42,8 @@ Apply median imputation & standard scaling to numeric features; one-hot encode c
 
 
 
-### THEORY:
+
+### THEORY: 
 
 
 
@@ -42,61 +51,51 @@ Apply median imputation & standard scaling to numeric features; one-hot encode c
 
 
 
-Pipelines ensure transformations are fit on training data only; critical for valid evaluation
+
+Bagging reduces variance (averaging), boosting reduces bias (sequential focus on errors). 
 
 
 
 
 
 
-## INPUT : 
 
-
-
-```
-# Experiment 7
-import pandas as pd
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.ensemble import RandomForestClassifier
-df = pd.DataFrame({'age':[25,35,
-None, 45],'income':[50,40,30,60],'city':['X','Y','X','Z'],'target':[0,1,0,1]})
-X = df[['age','income','city']]; y = df['target']
-numeric_features = ['age','income']
-numeric_transformer = Pipeline([('imputer',
-SimpleImputer(strategy='median')), ('scalar', StandardScaler())])
-cat_features = ['city']; cat_transformer = Pipeline([('onehot', OneHotEncoder(handle_unknown='ignore'))])
-preprocessor = ColumnTransformer([('num', numeric_transformer,
-numeric_features), ('cat', cat_transformer, cat_features)])
-clf = Pipeline([('pre', preprocessor), ('rf', RandomForestClassifier(random_state=42))])
-clf.fit(X,y)
-print('Preprocessor output shape:',
-preprocessor.transform(X).shape)
-print('Pipeline trainded successfully.')
-
+## INPUT :
 
 
 ```
+# EXPREIMENT 8
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+x,y = load_breast_cancer(return_X_y=True)
+xtr, xte, ytr, yte = train_test_split(x,y,test_size=0.3, random_state=42)
+rf = RandomForestClassifier(n_estimators=100, random_state=42).fit(xtr,ytr)
+ab = AdaBoostClassifier(n_estimators=50, random_state=42).fit(xtr,ytr)
+print('RF accuracy:', round(accuracy_score(yte, rf.predict(xte)),4))
+print('AdaBoost accuracy:', round(accuracy_score(yte, ab.predict(xte)),4))
 
+```
 
 
 ## OUTPUT:
 
-
 ```
-Preprocessor output shape: (4, 5)
-Pipeline trainded successfully.
-
+RF accuracy: 0.9708
+AdaBoost accuracy: 0.9708
 
 ```
 
-### RESULT: 
+
+
+
+### RESULT:
 
 
 
 
 
 
-Students learn to encapsulate preprocessing to avoid leakage and ensure correct application during training and prediction.
+
+Students compare bagging vs boosting; performance depends on data and hyperparameters.
