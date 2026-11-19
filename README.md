@@ -1,4 +1,4 @@
-### Experiment 8: Ensemble Methods: Random Forest vs AdaBoost comparison 
+### Experiment 9: Neural Network (Keras) on non-linear toy data (make_moons) 
 
 
 
@@ -13,8 +13,8 @@
 
 
 
-Train RandomForest and AdaBoost classifiers on the breast cancer dataset and compare 
-accuracies. 
+Train a small feedforward neural network to classify non-linear data. 
+
 
 
 
@@ -32,8 +32,7 @@ accuracies.
 
 
 
-RandomForest = bagging many trees; AdaBoost = sequential boosting of weak learners 
-focusing on hard examples.
+Two-layer dense network with ReLU hidden units and sigmoid output, trained with Adam. 
 
 
 
@@ -42,9 +41,7 @@ focusing on hard examples.
 
 
 
-
-### THEORY: 
-
+### THEORY:
 
 
 
@@ -52,7 +49,8 @@ focusing on hard examples.
 
 
 
-Bagging reduces variance (averaging), boosting reduces bias (sequential focus on errors). 
+With non-linear activations, networks approximate complex decision boundaries 
+(universal approximation).
 
 
 
@@ -60,37 +58,39 @@ Bagging reduces variance (averaging), boosting reduces bias (sequential focus on
 
 
 
-## INPUT :
+
+### INPUT : 
 
 
 ```
-# EXPREIMENT 8
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-from sklearn.datasets import load_breast_cancer
+#EXPREIMENT 9
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from sklearn.datasets import make_moons
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-x,y = load_breast_cancer(return_X_y=True)
-xtr, xte, ytr, yte = train_test_split(x,y,test_size=0.3, random_state=42)
-rf = RandomForestClassifier(n_estimators=100, random_state=42).fit(xtr,ytr)
-ab = AdaBoostClassifier(n_estimators=50, random_state=42).fit(xtr,ytr)
-print('RF accuracy:', round(accuracy_score(yte, rf.predict(xte)),4))
-print('AdaBoost accuracy:', round(accuracy_score(yte, ab.predict(xte)),4))
-
-```
-
-
-## OUTPUT:
-
-```
-RF accuracy: 0.9708
-AdaBoost accuracy: 0.9708
+x,y = make_moons(n_samples=500, noise=0.2, random_state=42)
+xtr,xte,ytr,yte = train_test_split(x,y,test_size=0.2,random_state=42)
+model = Sequential([Dense(8, activation='relu', input_shape=(2,)), Dense(1, activation='sigmoid')])
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.fit(xtr, ytr, epochs=30, batch_size=16, verbose=0)
+y_pred = (model.predict(xte) >0.5).astype(int).flatten()
+print('NN test accuracy:', round(accuracy_score(yte, y_pred),4))
 
 ```
 
 
 
 
-### RESULT:
+### OUTPUT :
+
+```
+/usr/local/lib/python3.13/dist-packages/keras/src/layers/core/dense.py:106: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+4/4 ━━━━━━━━━━━━━━━━━━━━ 0s 19ms/step
+NN test accuracy: 0.87
+
+```
 
 
 
@@ -98,4 +98,14 @@ AdaBoost accuracy: 0.9708
 
 
 
-Students compare bagging vs boosting; performance depends on data and hyperparameters.
+
+### RESULT : 
+
+
+
+
+
+
+
+Neural networks model non-linear boundaries; students see improved accuracy over 
+linear methods.
